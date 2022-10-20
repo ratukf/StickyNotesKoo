@@ -1,42 +1,40 @@
-// Select the Elements
+// Select Elemen
 const list = document.getElementById("list");
 const input = document.getElementById("input");
 
 // Variables
 let LIST;
 
-// get item from localstorage
-let data = localStorage.getItem("TODO");
+// Mengambil item dari local storage
+let data = localStorage.getItem("NOTES");
 
-// check if data is not empty
-if(data){
+// Checking jika data tidak kosong
+if(data){ // Jika data kosong
     LIST = JSON.parse(data);
-    id = LIST.length; // set the id to the last one in the list
-    loadList(LIST); // load the list to the user interface
+    id = LIST.length; // Set ID ke ID terakhir di list
+    loadList(LIST); // Memuat list ke UI
 }else{
-    // if data isn't empty
+    // Jika data tidak kosong
     LIST = [];
     id = 0;
 }
 
-// load items to the user's interface
+// Memuat items ke UI
 function loadList(array){
     array.forEach(function(item){
-        addToDo(item.name, item.id, item.done, item.trash);
+        addStickyNotes(item.name, item.id, item.done, item.trash);
     });
 }
 
 
-// add to do function
-function addToDo(toDo, id, done, trash){
+// Membuat fungsi add notes
+function addStickyNotes(notes, id, done, trash){
     
     if(trash){ return; }
     
-    const LINE = done ? LINE_THROUGH : "";
-    
     const item = 
                 `<li class="item">
-                    <h2 class="text ${LINE}">${toDo}</h2>
+                    <h2>${notes}</h2>
                     <i class="fa fa-trash fa-sm" job="delete" id="${id}"></i>
                   </li>
                 `;
@@ -46,27 +44,24 @@ function addToDo(toDo, id, done, trash){
     list.insertAdjacentHTML(position, item);
 }
 
-
-
-
-// add an item to the list user the enter key
+// Menambah item ke list & fungsi enter key
 document.addEventListener("keyup",function(even){
     if(event.keyCode == 13){
-        const toDo = input.value;
+        const notes = input.value;
         
-        // if the input isn't empty
-        if(toDo){
-            addToDo(toDo, id, false, false);
+        // Jika input tidak kosong
+        if(notes){
+            addStickyNotes(notes, id, false, false);
             
             LIST.push({
-                name : toDo,
+                name : notes,
                 id : id,
                 done : false,
                 trash : false
             });
             
-            // add item to localstorage ( this code must be added where the LIST array is updated)
-            localStorage.setItem("TODO", JSON.stringify(LIST));
+            // Menambah item ke localstorage
+            localStorage.setItem("NOTES", JSON.stringify(LIST));
             
             id++;
         }
@@ -74,47 +69,24 @@ document.addEventListener("keyup",function(even){
     }
 });
 
-// remove to do
-function removeToDo(element){
+// Hapus sticky notes
+function removeStickyNotes(element){
     element.parentNode.parentNode.removeChild(element.parentNode);
-    
     LIST[element.id].trash = true;
 }
 
-// target the items created dynamically
 
+// Target items yang dibuat secara dinamis
 list.addEventListener("click", function(event){
-    const element = event.target; // return the clicked element inside list
-    const elementJob = element.attributes.job.value; // complete or delete
+    const element = event.target; // Menampilkan elemen yang terklik dalam list 
+    const elementJob = element.attributes.job.value; // Complete atau delete
     
-    if(elementJob == "complete"){
-        completeToDo(element);
+    if(elementJob == " "){
+        completeStickyNotes(element);
     }else if(elementJob == "delete"){
-        removeToDo(element);
+        removeStickyNotes(element);
     }
     
-    // add item to localstorage ( this code must be added where the LIST array is updated)
-    localStorage.setItem("TODO", JSON.stringify(LIST));
+    // Menambah item ke localstorage
+    localStorage.setItem("NOTES", JSON.stringify(LIST));
 });
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
